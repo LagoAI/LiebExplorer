@@ -6,9 +6,12 @@ from loguru import logger
 
 from app.core.browser_manager import BrowserManager
 from app.schemas.browser import BrowserResponse, CreateInstanceRequest, VisitUrlRequest
-from app.main import browser_manager
+from app.core.browser_manager_instance import get_browser_manager
 
 router = APIRouter()
+
+# 获取浏览器管理器实例
+browser_manager = get_browser_manager()
 
 @router.post("/instances", response_model=List[BrowserResponse])
 async def create_instances(request: CreateInstanceRequest):
@@ -89,12 +92,43 @@ async def visit_url(instance_id: str, request: VisitUrlRequest):
         logger.error(f"Error visiting URL for instance {instance_id}: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
+@router.post("/instances/{instance_id}/start", response_model=BrowserResponse)
+async def start_instance(instance_id: str):
+    """启动浏览器实例"""
+    try:
+        success = browser_manager.create_instance(instance_id)
+        if not success:
+            raise HTTPException(status_code=404, detail="Instance not found or cannot be started")
+        instance = browser_manager.get_instance_info(instance_id)
+        if not instance:
+            raise HTTPException(status_code=404, detail="Instance info not found")
+        return instance
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error starting instance {instance_id}: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/instances/{instance_id}/stop")
+async def stop_instance(instance_id: str):
+    """停止浏览器实例"""
+    try:
+        success = browser_manager.delete_instance(instance_id)
+        if not success:
+            raise HTTPException(status_code=404, detail="Instance not found")
+        return {"status": "success"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error stopping instance {instance_id}: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 @router.post("/instances/batch/visit")
 async def batch_visit_url(instance_ids: List[str], request: VisitUrlRequest):
     """批量控制多个浏览器实例访问指定URL"""
     if not instance_ids:
         raise HTTPException(status_code=400, detail="No instance IDs provided")
-    
+
     results = []
     for instance_id in instance_ids:
         try:
@@ -117,7 +151,7 @@ async def batch_delete_instances(instance_ids: List[str]):
     """批量删除多个浏览器实例"""
     if not instance_ids:
         raise HTTPException(status_code=400, detail="No instance IDs provided")
-    
+
     results = []
     for instance_id in instance_ids:
         try:

@@ -1,4 +1,3 @@
-# backend/app/schemas/browser.py
 from pydantic import BaseModel, HttpUrl
 from typing import Dict, Any, Optional, List
 
@@ -10,7 +9,7 @@ class VisitUrlRequest(BaseModel):
     """URL visit request"""
     url: HttpUrl
 
-class BrowserResponse(BaseModel):   # 改名从 BrowserInstance 到 BrowserResponse
+class BrowserResponse(BaseModel):
     """Browser instance information response"""
     id: str
     status: str

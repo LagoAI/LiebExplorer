@@ -8,28 +8,30 @@ from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.options import Options
+from webdriver_manager.chrome import ChromeDriverManager as WebDriverManagerChrome
 
-# 修改导入方式
-from app.browser.fingerprint import FingerprintGenerator
-from app.browser.stealth import StealthBrowser
-from app.browser.window_manager import WindowManager
-from app.browser.driver_manager import ChromeDriverManager
+from ..browser.fingerprint import FingerprintGenerator
+from ..browser.stealth import StealthBrowser
+from ..browser.window_manager import WindowManager
+from ..browser.driver_manager import ChromeDriverManager as CustomChromeDriverManager
 class BrowserManager:
+
     def __init__(self):
         # 初始化目录和配置
         self.profiles_dir = "./chrome_profiles"
         self.state_file = "./chrome_states.json"
         if not os.path.exists(self.profiles_dir):
             os.makedirs(self.profiles_dir)
-        
+
         # 强制英文输入
         os.environ['LANG'] = 'en_US.UTF-8'
         os.environ['LC_ALL'] = 'en_US.UTF-8'
-        
+
         # 初始化状态和管理器
         self.chrome_processes = {}
-        self.driver_manager = ChromeDriverManager()
+        self.web_driver_manager = WebDriverManagerChrome()
+        self.custom_driver_manager = CustomChromeDriverManager()
         self.load_saved_state()
 
     def load_saved_state(self):
@@ -74,24 +76,31 @@ class BrowserManager:
         except Exception as e:
             print(f"Failed to write state file: {str(e)}")
 
+    
     def create_instance(self, instance_id):
         """创建新的浏览器实例"""
         try:
-            # 使用 ChromeDriverManager 创建新实例
-            driver = self.driver_manager.create_driver(
-                instance_id,
-                profile_name=f"profile_{instance_id}",
-                load_profile=True
-            )
+            # 配置 Chrome 选项
+            chrome_options = Options()
+            chrome_options.add_argument('--no-sandbox')
+            chrome_options.add_argument('--disable-dev-shm-usage')
             
+            # 设置用户数据目录
+            profile_path = os.path.join(self.profiles_dir, f"profile_{instance_id}")
+            chrome_options.add_argument(f'--user-data-dir={profile_path}')
+
+            # 创建 Chrome 驱动
+            service = Service(executable_path=self.web_driver_manager.install())
+            driver = webdriver.Chrome(service=service, options=chrome_options)
+
             # 应用指纹和隐身设置
             fingerprint = FingerprintGenerator.generate()
             FingerprintGenerator.inject_fingerprint(driver, fingerprint)
             StealthBrowser.inject_stealth_js(driver)
-            
+
             # 设置窗口位置和大小
             WindowManager.position_window(driver, instance_id)
-            
+
             # 保存实例信息
             self.chrome_processes[instance_id] = {
                 'driver': driver,
@@ -99,12 +108,13 @@ class BrowserManager:
                 'launch_time': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
                 'fingerprint': fingerprint
             }
-            
+
             return True
         except Exception as e:
             print(f"Failed to start instance {instance_id}: {str(e)}")
             try:
-                driver.quit()
+                if 'driver' in locals():
+                    driver.quit()
             except:
                 pass
             return False

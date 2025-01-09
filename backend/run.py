@@ -7,10 +7,9 @@ from app.utils.logger import setup_logging
 @click.option('--host', default="127.0.0.1", help="Bind socket to this host.")
 @click.option('--port', default=8000, help="Bind socket to this port.")
 @click.option('--reload', is_flag=True, help="Enable auto-reload.")
-@click.option('--debug', is_flag=True, help="Enable debug mode.")
 @click.option('--workers', default=1, help="Number of worker processes.")
 @click.option('--log-file', type=click.Path(), help="Log file path.")
-def main(host: str, port: int, reload: bool, debug: bool, workers: int, log_file: str):
+def main(host: str, port: int, reload: bool, workers: int, log_file: str):
     """启动 Lei Browser API 服务"""
     # 设置日志
     if log_file:
@@ -25,8 +24,7 @@ def main(host: str, port: int, reload: bool, debug: bool, workers: int, log_file
         port=port,
         reload=reload,
         workers=workers,
-        log_level="debug" if debug else "info",
-        # 删除了 debug 参数
+        log_level="info"
     )
 
 if __name__ == "__main__":

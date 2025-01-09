@@ -10,7 +10,8 @@ import {
   Space,
   Tooltip,
   Badge,
-  InputNumber 
+  InputNumber,
+  App 
 } from 'antd';
 import { 
   PlusOutlined,
@@ -27,10 +28,11 @@ import {
   deleteBrowserInstance,
   startBrowserInstance,
   stopBrowserInstance,
-  visitUrl 
+  visitUrl,
+  type BrowserInstance 
 } from '../services/api';
 
-const BrowserManage: React.FC = () => {
+const BrowserManageContent: React.FC = () => {
   const [createModalVisible, setCreateModalVisible] = useState(false);
   const [visitUrlModalVisible, setVisitUrlModalVisible] = useState(false);
   const [selectedInstanceId, setSelectedInstanceId] = useState<string | null>(null);
@@ -39,23 +41,29 @@ const BrowserManage: React.FC = () => {
   const queryClient = useQueryClient();
 
   // 获取浏览器实例列表
-  const { data: instances = [], isLoading } = useQuery(
+  const { data: instances = [], isLoading } = useQuery<BrowserInstance[]>(
     'browserInstances',
-    fetchBrowserInstances
+    fetchBrowserInstances,
+    {
+      refetchInterval: 5000 // 每5秒自动刷新
+    }
   );
 
   // 创建新实例
-  const createMutation = useMutation(createBrowserInstance, {
-    onSuccess: () => {
-      message.success('实例创建成功');
-      queryClient.invalidateQueries('browserInstances');
-      setCreateModalVisible(false);
-      form.resetFields();
-    },
-    onError: (error: Error) => {
-      message.error(`创建失败: ${error.message}`);
-    },
-  });
+  const createMutation = useMutation(
+    (values: { instanceCount: number }) => createBrowserInstance({ instanceCount: values.instanceCount }),
+    {
+      onSuccess: () => {
+        message.success('实例创建成功');
+        queryClient.invalidateQueries('browserInstances');
+        setCreateModalVisible(false);
+        form.resetFields();
+      },
+      onError: (error: Error) => {
+        message.error(`创建失败: ${error.message}`);
+      },
+    }
+  );
 
   // 删除实例
   const deleteMutation = useMutation(deleteBrowserInstance, {
@@ -91,17 +99,20 @@ const BrowserManage: React.FC = () => {
   });
 
   // 访问URL
-  const visitUrlMutation = useMutation(visitUrl, {
-    onSuccess: () => {
-      message.success('URL访问请求已发送');
-      queryClient.invalidateQueries('browserInstances');
-      setVisitUrlModalVisible(false);
-      urlForm.resetFields();
-    },
-    onError: (error: Error) => {
-      message.error(`访问失败: ${error.message}`);
-    },
-  });
+  const visitUrlMutation = useMutation(
+    (values: { id: string; url: string }) => visitUrl(values),
+    {
+      onSuccess: () => {
+        message.success('URL访问请求已发送');
+        queryClient.invalidateQueries('browserInstances');
+        setVisitUrlModalVisible(false);
+        urlForm.resetFields();
+      },
+      onError: (error: Error) => {
+        message.error(`访问失败: ${error.message}`);
+      },
+    }
+  );
 
   const columns = [
     {
@@ -121,20 +132,28 @@ const BrowserManage: React.FC = () => {
       ),
     },
     {
+      title: '内存使用',
+      dataIndex: 'memoryUsage',
+      key: 'memoryUsage',
+      render: (memoryUsage: number) => `${memoryUsage.toFixed(2)} MB`,
+    },
+    {
       title: '当前URL',
       dataIndex: 'currentUrl',
       key: 'currentUrl',
       ellipsis: true,
+      render: (url: string) => url || '-',
     },
     {
       title: '启动时间',
       dataIndex: 'startTime',
       key: 'startTime',
+      render: (time: string) => time || '-',
     },
     {
       title: '操作',
       key: 'action',
-      render: (_: any, record: any) => (
+      render: (_: any, record: BrowserInstance) => (
         <Space size="middle">
           {record.status === 'running' ? (
             <Tooltip title="停止">
@@ -174,7 +193,7 @@ const BrowserManage: React.FC = () => {
   ];
 
   return (
-    <div>
+    <div style={{ padding: '24px' }}>
       <Card
         title="浏览器实例管理"
         extra={
@@ -200,6 +219,12 @@ const BrowserManage: React.FC = () => {
           dataSource={instances}
           rowKey="id"
           loading={isLoading}
+          pagination={{ 
+            total: instances.length,
+            pageSize: 10,
+            showSizeChanger: true,
+            showQuickJumper: true
+          }}
         />
       </Card>
 
@@ -220,8 +245,9 @@ const BrowserManage: React.FC = () => {
             name="instanceCount"
             label="实例数量"
             rules={[{ required: true, message: '请输入实例数量' }]}
+            initialValue={1}
           >
-            <InputNumber min={1} max={10} />
+            <InputNumber min={1} max={10} style={{ width: '100%' }} />
           </Form.Item>
         </Form>
       </Modal>
@@ -259,6 +285,15 @@ const BrowserManage: React.FC = () => {
         </Form>
       </Modal>
     </div>
+  );
+};
+
+// 包装组件以使用 App Context
+const BrowserManage: React.FC = () => {
+  return (
+    <App>
+      <BrowserManageContent />
+    </App>
   );
 };
 
