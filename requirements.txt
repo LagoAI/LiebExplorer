@@ -1,0 +1,153 @@
+# File: requirements.txt
+fastapi==0.104.1
+uvicorn==0.24
+selenium==4.15.2
+webdriver-manager==4.0.1
+python-dotenv==1.0.0
+aiofiles==23.2.1
+psutil==5.9.6
+websockets==11.0.3
+python-multipart==0.0.6
+aiohttp==3.8.5
+cryptography==41.0.4
+pytest==7.4.2
+coverage==7.3.1
+pydantic==2.5.1
+click==8.1.7
+loguru==0.7.2
+
+# File: README.md
+# LEIBrowser
+
+A sophisticated browser instance control system that supports multiple browser profiles, data encryption, and advanced analytics.
+
+## Features
+
+- Multiple browser instance management
+- Profile data encryption
+- Advanced analytics for browser usage
+- Data cleaning and optimization
+- Profile backup and restore
+- Real-time monitoring and control
+
+## Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/your-username/leibrowser.git
+cd leibrowser
+
+# Install dependencies
+sudo ./deploy/install.sh
+```
+
+## Documentation
+
+See the [Documentation](docs/) directory for detailed guides.
+
+## License
+
+MIT License
+
+# File: .gitignore
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+venv/
+ENV/
+env/
+.env
+.venv
+
+# Browser Profiles and Data
+browser_profiles/
+profile_backups/
+*.profile
+profile.key
+browser_states.json
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+frontend/dist/
+frontend/build/
+
+# IDE
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# Logs and databases
+*.log
+*.sqlite3
+logs/
+chrome_states.json
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+Thumbs.db
+
+# Security
+*.key
+*.pem
+*.cert
+*.crt
+
+# Temporary files
+*.swp
+*.swo
+*~
+.temp/
+.tmp/
+
+# Local development
+config.local.py
+settings.local.py
+
+# File: LICENSE
+MIT License
+
+Copyright (c) 2024 LIEB.AI
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.

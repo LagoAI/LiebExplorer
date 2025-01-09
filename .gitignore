@@ -1,0 +1,134 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+venv/
+ENV/
+env/
+.env
+.venv
+
+# Browser Profiles and Data
+browser_profiles/
+profile_backups/
+*.profile
+profile.key
+browser_states.json
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+frontend/dist/
+frontend/build/
+
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# IDE - PyCharm
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# IDE - Sublime Text
+*.sublime-workspace
+*.sublime-project
+
+# Logs and databases
+*.log
+*.sqlite3
+logs/
+chrome_states.json
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Environment variables
+.env*
+!.env.example
+
+# Test coverage
+htmlcov/
+.coverage
+.coverage.*
+.cache
+coverage.xml
+*.cover
+.pytest_cache/
+
+# Distribution / packaging
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.manifest
+*.spec
+
+# Documentation
+docs/_build/
+
+# Security
+*.key
+*.pem
+*.cert
+*.crt
+*.key.pub
+
+# Temporary files
+*.swp
+*.swo
+*~
+.temp/
+.tmp/
+
+# Local development configuration
+config.local.py
+settings.local.py
+
+# Compiled files
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.class
+
+# System files
+.directory
+*.retry
+
+# Deploy scripts output
+deploy/*.log
+deploy/*.pid
+deploy/*.socket
