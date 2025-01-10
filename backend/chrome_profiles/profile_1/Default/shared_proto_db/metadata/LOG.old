@@ -1,2 +1,3 @@
-2025/01/09-15:30:02.728 a907 Creating DB /Users/dakar/LibExplorer/backend/chrome_profiles/profile_1/Default/shared_proto_db/metadata since it was missing.
-2025/01/09-15:30:02.752 a907 Reusing MANIFEST /Users/dakar/LibExplorer/backend/chrome_profiles/profile_1/Default/shared_proto_db/metadata/MANIFEST-000001
+2025/01/10-09:46:31.739 a503 Reusing MANIFEST /Users/dakar/LibExplorer/backend/chrome_profiles/profile_1/Default/shared_proto_db/metadata/MANIFEST-000001
+2025/01/10-09:46:31.739 a503 Recovering log #3
+2025/01/10-09:46:31.740 a503 Reusing old log /Users/dakar/LibExplorer/backend/chrome_profiles/profile_1/Default/shared_proto_db/metadata/000003.log 
