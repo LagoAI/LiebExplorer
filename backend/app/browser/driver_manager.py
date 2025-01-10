@@ -25,6 +25,14 @@ class ChromeDriverManager:
         # 延迟初始化 profile_manager 和 service
         self._profile_manager = None
         self._service = None
+        self._wdm = None  # 添加 WebDriver Manager 实例
+
+    @property
+    def webdriver_manager(self):
+        """Lazy initialization of WebDriver Manager"""
+        if self._wdm is None:
+            self._wdm = ChromeDriverManager(cache_valid_range=1)
+        return self._wdm
 
     @property
     def profile_manager(self):
@@ -38,7 +46,7 @@ class ChromeDriverManager:
     def service(self):
         """Lazy initialization of ChromeDriver service"""
         if self._service is None:
-            self._service = Service(ChromeDriverManager().install())
+            self._service = Service(self.webdriver_manager.install())
         return self._service
 
     def create_driver(self, instance_id: int, profile_name: str = None,
